@@ -14,7 +14,6 @@ import org.subhashis.simplestecommerceapp.exceptions.ProductNotFoundException;
 import org.subhashis.simplestecommerceapp.services.OrderProductService;
 import org.subhashis.simplestecommerceapp.services.OrderService;
 import org.subhashis.simplestecommerceapp.services.ProductService;
-import reactor.core.publisher.Flux;
 
 import javax.validation.constraints.NotNull;
 import java.net.URI;
@@ -40,7 +39,7 @@ public class OrderController {
 
     @GetMapping(value = { "", "/" })
     @ResponseStatus(HttpStatus.OK)
-    public Flux<Order> list() {
+    public List<Order> list() {
         return this.orderService.getAllOrders();
     }
 
@@ -52,12 +51,14 @@ public class OrderController {
         order.setStatus(OrderStatus.PAID);
         order.setDateCreated(LocalDateTime.now());
 
-        order = this.orderService.create(order).block();
+        order = this.orderService.create(order);
 
         List<OrderProduct> orderProducts = new ArrayList<>();
         for (OrderProductDto dto : formDtos) {
-            var product = productService.getProduct(dto.getProduct().getId()).block();
-            orderProducts.add(orderProductService.create(new OrderProduct(product, dto.getQuantity())).block());
+            var product = productService.getProduct(dto.getProduct().getId())
+                    .orElseThrow(() -> new ProductNotFoundException("Product with id " +
+                            dto.getProduct().getId() + " is not found"));;
+            orderProducts.add(orderProductService.create(new OrderProduct(product, dto.getQuantity())));
         }
 
         order.setOrderProducts(orderProducts);

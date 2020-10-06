@@ -2,20 +2,20 @@ package org.subhashis.simplestecommerceapp.configs;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.reactivestreams.client.MongoClient;
-import com.mongodb.reactivestreams.client.MongoClients;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
+import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Slf4j
 @Configuration
-@EnableReactiveMongoRepositories(basePackages = "org.subhashis.simplestecommerceapp.repositories")
-public class DataSourceReactiveMongoConfig extends AbstractReactiveMongoConfiguration {
+@EnableMongoRepositories(basePackages = "org.subhashis.simplestecommerceapp.repositories")
+public class DataSourceMongoConfig extends AbstractMongoClientConfiguration {
 
     //@Value("${spring.data.mongodb.uri}")
     //private String mongoDbUri;
@@ -40,8 +40,8 @@ public class DataSourceReactiveMongoConfig extends AbstractReactiveMongoConfigur
         return connectionString().getDatabase();
     }
 
-    @Bean
-    public MongoClient reactiveMongoClient() {
+    @Override
+    public MongoClient mongoClient() {
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString())
                 .build();
@@ -50,8 +50,8 @@ public class DataSourceReactiveMongoConfig extends AbstractReactiveMongoConfigur
     }
 
     @Bean
-    public ReactiveMongoTemplate reactiveMongoTemplate() {
-        return new ReactiveMongoTemplate(reactiveMongoClient(), getDatabaseName());
+    public MongoTemplate mongoTemplate() {
+        return new MongoTemplate(mongoClient(), getDatabaseName());
     }
 
     private ConnectionString connectionString() {

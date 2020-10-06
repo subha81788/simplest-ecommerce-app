@@ -2,35 +2,34 @@ package org.subhashis.simplestecommerceapp.services.impl;
 
 import org.springframework.stereotype.Service;
 import org.subhashis.simplestecommerceapp.documents.Order;
-import org.subhashis.simplestecommerceapp.repositories.OrderReactiveRepository;
+import org.subhashis.simplestecommerceapp.repositories.OrderRepository;
 import org.subhashis.simplestecommerceapp.services.OrderService;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private OrderReactiveRepository orderReactiveRepository;
+    private OrderRepository orderRepository;
 
-    public OrderServiceImpl(OrderReactiveRepository orderReactiveRepository) {
-        this.orderReactiveRepository = orderReactiveRepository;
+    public OrderServiceImpl(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
     }
 
     @Override
-    public @NotNull Flux<Order> getAllOrders() {
-        return this.orderReactiveRepository.findAll();
+    public @NotNull List<Order> getAllOrders() {
+        return this.orderRepository.findAll();
     }
 
     @Override
-    public Mono<Order> create(@NotNull(message = "The order cannot be null.") @Valid Order order) {
-        return this.orderReactiveRepository.save(order);
+    public Order create(@NotNull(message = "The order cannot be null.") @Valid Order order) {
+        return this.orderRepository.save(order);
     }
 
     @Override
     public void update(@NotNull(message = "The order cannot be null.") @Valid Order order) {
-        this.orderReactiveRepository.save(order);
+        this.orderRepository.save(order);
     }
 }

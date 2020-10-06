@@ -6,11 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.http.HttpStatus;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.fasterxml.jackson.annotation.JsonFormat.*;
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "timestamp", "status", "message", "errors" })

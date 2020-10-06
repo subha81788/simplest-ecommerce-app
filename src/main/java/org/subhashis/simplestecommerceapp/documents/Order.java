@@ -1,13 +1,12 @@
 package org.subhashis.simplestecommerceapp.documents;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -24,6 +23,7 @@ public class Order {
     @Id
     private String id = "_id" + UUID.randomUUID().toString();
 
+    @Field(value = "orderCreatedAt")
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDateTime dateCreated = LocalDateTime.now();
 

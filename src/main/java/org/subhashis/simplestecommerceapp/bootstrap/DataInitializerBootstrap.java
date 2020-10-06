@@ -8,12 +8,9 @@ import org.subhashis.simplestecommerceapp.documents.Order;
 import org.subhashis.simplestecommerceapp.documents.OrderProduct;
 import org.subhashis.simplestecommerceapp.documents.OrderStatus;
 import org.subhashis.simplestecommerceapp.documents.Product;
-import org.subhashis.simplestecommerceapp.dto.OrderProductDto;
-import org.subhashis.simplestecommerceapp.repositories.OrderProductReactiveRepository;
-import org.subhashis.simplestecommerceapp.repositories.OrderReactiveRepository;
-import org.subhashis.simplestecommerceapp.repositories.ProductReactiveRepository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.subhashis.simplestecommerceapp.repositories.OrderProductRepository;
+import org.subhashis.simplestecommerceapp.repositories.OrderRepository;
+import org.subhashis.simplestecommerceapp.repositories.ProductRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,15 +19,15 @@ import java.util.List;
 @Component
 public class DataInitializerBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
-    private ProductReactiveRepository productReactiveRepository;
+    private ProductRepository productRepository;
 
-    private OrderReactiveRepository orderReactiveRepository;
+    private OrderRepository orderRepository;
 
-    private OrderProductReactiveRepository orderProductReactiveRepository;
+    private OrderProductRepository orderProductRepository;
 
-    public DataInitializerBootstrap(ProductReactiveRepository productReactiveRepository, OrderReactiveRepository orderReactiveRepository) {
-        this.productReactiveRepository = productReactiveRepository;
-        this.orderReactiveRepository = orderReactiveRepository;
+    public DataInitializerBootstrap(ProductRepository productRepository, OrderRepository orderRepository) {
+        this.productRepository = productRepository;
+        this.orderRepository = orderRepository;
 
     }
 
@@ -49,22 +46,19 @@ public class DataInitializerBootstrap implements ApplicationListener<ContextRefr
         var phone = new Product("10006", "Phone", new BigDecimal(500.00), "http://placehold.it/200x100");
         var watch = new Product("10007", "Watch", new BigDecimal(30.00), "http://placehold.it/200x100");
 
-        log.info("Loading Product data...");
-        productReactiveRepository.deleteAll()
-                .thenMany(Flux.fromIterable(List.of(tvSet,gameConsole,sofa,beer,iceCream,phone,watch)))
-                .flatMap(productReactiveRepository::save)
-                .thenMany(productReactiveRepository.findAll())
-                .subscribe(product -> log.info("Product details inserted: " + product));
+        productRepository.deleteAll();
+        productRepository.saveAll(List.of(tvSet,gameConsole,sofa,beer,iceCream,phone,watch));
+        log.info("Product details initialized");
+
     }
 
     private void loadOrdersData() {
-        var tvSet = new Product("10001", "TV Set", new BigDecimal(300.00), "http://placehold.it/200x100");
+        var tvSet = productRepository.findById("10001").get();
         var orderProduct1 = new OrderProduct(tvSet, 1);
         var order1 = new Order(OrderStatus.PAID, List.of(orderProduct1));
-        orderReactiveRepository.deleteAll()
-                .then(Mono.just(order1))
-                .flatMap(orderReactiveRepository::save)
-                .thenMany(orderReactiveRepository.findAll())
-                .subscribe(order -> log.info("Order details inserted: " + order));
+
+        orderRepository.deleteAll();
+        orderRepository.save(order1);
+        log.info("Order details initialized");
     }
 }

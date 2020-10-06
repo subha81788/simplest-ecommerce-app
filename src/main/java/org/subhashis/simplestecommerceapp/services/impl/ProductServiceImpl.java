@@ -2,38 +2,36 @@ package org.subhashis.simplestecommerceapp.services.impl;
 
 import org.springframework.stereotype.Service;
 import org.subhashis.simplestecommerceapp.documents.Product;
-import org.subhashis.simplestecommerceapp.exceptions.ProductNotFoundException;
-import org.subhashis.simplestecommerceapp.repositories.ProductReactiveRepository;
+import org.subhashis.simplestecommerceapp.repositories.ProductRepository;
 import org.subhashis.simplestecommerceapp.services.ProductService;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private ProductReactiveRepository productReactiveRepository;
+    private ProductRepository productRepository;
 
-    public ProductServiceImpl(ProductReactiveRepository productReactiveRepository) {
-        this.productReactiveRepository = productReactiveRepository;
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     @Override
-    public @NotNull Flux<Product> getAllProducts() {
-        return this.productReactiveRepository.findAll();
+    public @NotNull List<Product> getAllProducts() {
+        return this.productRepository.findAll();
     }
 
     @Override
-    public Mono<Product> getProduct(@NotBlank(message = "Invalid product ID.") String id) {
-        return this.productReactiveRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ProductNotFoundException("Product with id " + id + " not found")));
+    public Optional<Product> getProduct(@NotBlank(message = "Invalid product ID.") String id) {
+        return this.productRepository.findById(id);
     }
 
     @Override
-    public Mono<Product> save(@NotNull(message = "The product cannot be null.") @Valid Product product) {
-        return this.productReactiveRepository.save(product);
+    public Product save(@NotNull(message = "The product cannot be null.") @Valid Product product) {
+        return this.productRepository.save(product);
     }
 }
