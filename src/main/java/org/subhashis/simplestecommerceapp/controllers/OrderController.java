@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.subhashis.simplestecommerceapp.documents.Order;
@@ -15,7 +16,7 @@ import org.subhashis.simplestecommerceapp.services.OrderProductService;
 import org.subhashis.simplestecommerceapp.services.OrderService;
 import org.subhashis.simplestecommerceapp.services.ProductService;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,18 +24,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    private ProductService productService;
-    private OrderService orderService;
-    private OrderProductService orderProductService;
+    private final ProductService productService;
+    private final OrderService orderService;
+    private final OrderProductService orderProductService = null;
 
-    public OrderController(ProductService productService, OrderService orderService, OrderProductService orderProductService) {
+    public OrderController(ProductService productService, OrderService orderService) {
         this.productService = productService;
         this.orderService = orderService;
-        this.orderProductService = orderProductService;
+        //this.orderProductService = orderProductService;
     }
 
     @GetMapping(value = { "", "/" })
@@ -44,7 +46,7 @@ public class OrderController {
     }
 
     @PostMapping(value = { "", "/" }, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Order> create(@RequestBody @NotNull OrderForm form) {
+    public ResponseEntity<Order> create(@Valid @RequestBody OrderForm form) {
         List<OrderProductDto> formDtos = form.getProductOrders();
         validateProductsExistence(formDtos);
         Order order = new Order();

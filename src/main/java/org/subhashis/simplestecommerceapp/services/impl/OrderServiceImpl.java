@@ -1,6 +1,7 @@
 package org.subhashis.simplestecommerceapp.services.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.subhashis.simplestecommerceapp.documents.Order;
 import org.subhashis.simplestecommerceapp.repositories.OrderRepository;
 import org.subhashis.simplestecommerceapp.services.OrderService;
@@ -9,10 +10,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Validated
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     public OrderServiceImpl(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;

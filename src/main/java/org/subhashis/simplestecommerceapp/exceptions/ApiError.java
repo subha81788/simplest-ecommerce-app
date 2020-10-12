@@ -44,11 +44,12 @@ public class ApiError {
         this.errors = errors;
     }
 
-    public ApiError(HttpStatus status, String message, String error) {
+    public ApiError(HttpStatus status, String message, List<String> errors, LocalDateTime timestamp) {
         super();
         this.status = status;
         this.message = message;
-        errors = List.of(error);
+        this.errors = errors;
+        this.timestamp = timestamp;
     }
 
     public HttpStatus getStatus() {
@@ -57,5 +58,16 @@ public class ApiError {
 
     public String getMessage() {
         return this.message;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ApiError{");
+        sb.append("timestamp=").append(timestamp);
+        sb.append(", status=").append(status);
+        sb.append(", message='").append(message).append('\'');
+        sb.append(", errors=").append(errors);
+        sb.append('}');
+        return sb.toString();
     }
 }
