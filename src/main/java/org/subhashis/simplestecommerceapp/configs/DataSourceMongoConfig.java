@@ -26,7 +26,7 @@ public class DataSourceMongoConfig extends AbstractMongoClientConfiguration {
     @Value("${spring.data.mongodb.port}")
     private String mongoPort;
 
-    @Value("${spring.data.mongodb.db}")
+    @Value("${spring.data.mongodb.database}")
     private String mongoDbName;
 
     @Value("${spring.data.mongodb.username}")

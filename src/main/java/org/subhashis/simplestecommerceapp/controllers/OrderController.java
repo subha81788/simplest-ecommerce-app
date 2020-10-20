@@ -60,7 +60,7 @@ public class OrderController {
             var product = productService.getProduct(dto.getProduct().getId())
                     .orElseThrow(() -> new ProductNotFoundException("Product with id " +
                             dto.getProduct().getId() + " is not found"));;
-            orderProducts.add(orderProductService.create(new OrderProduct(product, dto.getQuantity())));
+            orderProducts.add(new OrderProduct(product, dto.getQuantity()));
         }
 
         order.setOrderProducts(orderProducts);

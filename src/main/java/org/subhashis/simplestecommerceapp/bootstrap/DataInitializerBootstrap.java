@@ -35,6 +35,8 @@ public class DataInitializerBootstrap implements ApplicationListener<ContextRefr
     }
 
     private void loadProductData() {
+        productRepository.deleteAll();
+
         var tvSet = new Product("10001", "TV Set", new Decimal128(new BigDecimal("300.00")), "http://placehold.it/200x100");
         var gameConsole = new Product("10002", "Game Console", new Decimal128(new BigDecimal("200.00")), "http://placehold.it/200x100");
         var sofa = new Product("10003", "Sofa", new Decimal128(new BigDecimal("100.00")), "http://placehold.it/200x100");
@@ -43,18 +45,23 @@ public class DataInitializerBootstrap implements ApplicationListener<ContextRefr
         var phone = new Product("10006", "Phone", new Decimal128(new BigDecimal("500.00")), "http://placehold.it/200x100");
         var watch = new Product("10007", "Watch", new Decimal128(new BigDecimal("30.00")), "http://placehold.it/200x100");
 
-        productRepository.deleteAll();
         productRepository.saveAll(List.of(tvSet,gameConsole,sofa,beer,iceCream,phone,watch));
         log.info("Product details initialized");
 
     }
 
     private void loadOrdersData() {
-        var tvSet = productRepository.findById("10001").get();
-        var orderProduct1 = new OrderProduct(tvSet, 1);
-        var order1 = new Order(OrderStatus.PAID, List.of(orderProduct1));
-
         orderRepository.deleteAll();
+
+        var tvSet = productRepository.findById("10001").get();
+        var beer= productRepository.findById("10004").get();
+        var phone= productRepository.findById("10006").get();
+        var orderProduct1 = new OrderProduct(tvSet, 1);
+        var orderProduct2 = new OrderProduct(beer, 5);
+        var orderProduct3 = new OrderProduct(phone, 1);
+
+        var order1 = new Order(OrderStatus.PAID, List.of(orderProduct1, orderProduct2, orderProduct3));
+
         orderRepository.save(order1);
         log.info("Order details initialized");
     }
